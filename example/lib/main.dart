@@ -1,4 +1,6 @@
+import 'package:example/bloc/counter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,7 +11,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: BlocProvider<CounterBloc>(
+        create: (context) => CounterBloc(),
+        child: MyHomePage(),
+      ),
     );
   }
 }
@@ -35,10 +40,25 @@ class MyHomePage extends StatelessWidget {
 class CounterValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text(
-      '0',
-      style: Theme.of(context).textTheme.headline1,
+    return BlocBuilder<CounterBloc, CounterState>(
+      builder: (context, state) {
+        if (state is HasValue) {
+          return Text(
+            state.value.toString(),
+            style: Theme.of(context).textTheme.headline1,
+          );
+        }
+        return CircularProgressIndicator();
+      },
     );
+    // final CounterState state = context.watch<CounterBloc>().state;
+    // if (state is HasValue) {
+    //   return Text(
+    //     state.value.toString(),
+    //     style: Theme.of(context).textTheme.headline1,
+    //   );
+    // }
+    // return CircularProgressIndicator();
   }
 }
 
@@ -53,15 +73,21 @@ class ControlButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FloatingActionButton(
-              onPressed: () {},
+              onPressed: () =>
+                  BlocProvider.of<CounterBloc>(context).add(Increment()),
+              //onPressed: () => context.read<CounterBloc>().add(Increment()),
               child: Icon(Icons.add),
             ),
             FloatingActionButton(
-              onPressed: () {},
+              onPressed: () =>
+                  BlocProvider.of<CounterBloc>(context).add(GetRandom()),
+              //onPressed: () => context.read<CounterBloc>().add(GetRandom()),
               child: Text('?', style: TextStyle(fontSize: 18)),
             ),
             FloatingActionButton(
-              onPressed: () {},
+              onPressed: () =>
+                  BlocProvider.of<CounterBloc>(context).add(Decrement()),
+              //onPressed: () => context.read<CounterBloc>().add(Decrement()),
               child: Icon(Icons.remove),
             ),
           ],
