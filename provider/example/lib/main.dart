@@ -1,3 +1,4 @@
+import 'package:example/counter_state.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -10,19 +11,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: CounterState(
+        counterValue: 0,
+        child: MyHomePage(),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => MyHomePageState();
-}
-
-class MyHomePageState extends State<MyHomePage> {
-  int _counterValue = 0;
-
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,13 +29,8 @@ class MyHomePageState extends State<MyHomePage> {
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          CounterValue(value: _counterValue),
-          ControlButtons(
-            onIncrementPressed: () => setState(() => _counterValue++),
-            onRandomPressed: () =>
-                setState(() => _counterValue = math.Random().nextInt(20)),
-            onDecrementPressed: () => setState(() => _counterValue--),
-          ),
+          CounterValue(),
+          ControlButtons(),
         ],
       ),
     );
@@ -46,30 +38,16 @@ class MyHomePageState extends State<MyHomePage> {
 }
 
 class CounterValue extends StatelessWidget {
-  final int value;
-
-  CounterValue({this.value});
-
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${this.value}',
+      CounterState.of(context).counterValue.toString(),
       style: Theme.of(context).textTheme.headline1,
     );
   }
 }
 
 class ControlButtons extends StatelessWidget {
-  final void Function() onIncrementPressed;
-  final void Function() onRandomPressed;
-  final void Function() onDecrementPressed;
-
-  ControlButtons({
-    this.onIncrementPressed,
-    this.onRandomPressed,
-    this.onDecrementPressed,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -80,15 +58,16 @@ class ControlButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FloatingActionButton(
-              onPressed: onIncrementPressed,
+              onPressed: () => CounterState.of(context).counterValue++,
               child: Icon(Icons.add),
             ),
             FloatingActionButton(
-              onPressed: onRandomPressed,
+              onPressed: () => CounterState.of(context).counterValue =
+                  math.Random().nextInt(20),
               child: Text('?', style: TextStyle(fontSize: 18)),
             ),
             FloatingActionButton(
-              onPressed: onDecrementPressed,
+              onPressed: () => CounterState.of(context).counterValue--,
               child: Icon(Icons.remove),
             ),
           ],
