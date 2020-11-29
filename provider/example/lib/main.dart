@@ -1,5 +1,6 @@
 import 'package:example/counter_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +11,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CounterStateHolder(
+      home: ChangeNotifierProvider(
+        create: (_) => CounterState(),
         child: MyHomePage(),
       ),
     );
@@ -38,9 +40,13 @@ class MyHomePage extends StatelessWidget {
 class CounterValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text(
-      InheritedState.of(context).counterState.counterValue.toString(),
-      style: Theme.of(context).textTheme.headline1,
+    return Consumer<CounterState>(
+      builder: (context, counterState, child) {
+        return Text(
+          '${counterState.counterValue}',
+          style: Theme.of(context).textTheme.headline1,
+        );
+      },
     );
   }
 }
@@ -56,17 +62,15 @@ class ControlButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FloatingActionButton(
-              onPressed: () =>
-                  InheritedState.of(context).counterState.increment(),
+              onPressed: () => context.read<CounterState>().increment(),
               child: Icon(Icons.add),
             ),
             FloatingActionButton(
-              onPressed: () => InheritedState.of(context).counterState.random(),
+              onPressed: () => context.read<CounterState>().random(),
               child: Text('?', style: TextStyle(fontSize: 18)),
             ),
             FloatingActionButton(
-              onPressed: () =>
-                  InheritedState.of(context).counterState.decrement(),
+              onPressed: () => context.read<CounterState>().decrement(),
               child: Icon(Icons.remove),
             ),
           ],
