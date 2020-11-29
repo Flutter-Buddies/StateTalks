@@ -1,6 +1,5 @@
 import 'package:example/counter_state.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 void main() {
   runApp(MyApp());
@@ -11,8 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CounterState(
-        counterValue: 0,
+      home: CounterStateHolder(
         child: MyHomePage(),
       ),
     );
@@ -41,7 +39,7 @@ class CounterValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      CounterState.of(context).counterValue.toString(),
+      InheritedState.of(context).counterState.counterValue.toString(),
       style: Theme.of(context).textTheme.headline1,
     );
   }
@@ -58,16 +56,17 @@ class ControlButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FloatingActionButton(
-              onPressed: () => CounterState.of(context).counterValue++,
+              onPressed: () =>
+                  InheritedState.of(context).counterState.increment(),
               child: Icon(Icons.add),
             ),
             FloatingActionButton(
-              onPressed: () => CounterState.of(context).counterValue =
-                  math.Random().nextInt(20),
+              onPressed: () => InheritedState.of(context).counterState.random(),
               child: Text('?', style: TextStyle(fontSize: 18)),
             ),
             FloatingActionButton(
-              onPressed: () => CounterState.of(context).counterValue--,
+              onPressed: () =>
+                  InheritedState.of(context).counterState.decrement(),
               child: Icon(Icons.remove),
             ),
           ],

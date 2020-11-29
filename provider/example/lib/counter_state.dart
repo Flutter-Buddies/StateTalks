@@ -1,18 +1,47 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
-class CounterState extends InheritedWidget {
-  final int counterValue;
+class InheritedState extends InheritedWidget {
+  final CounterState counterState;
 
-  CounterState({
+  InheritedState({
     Key key,
-    @required this.counterValue,
+    @required this.counterState,
     @required Widget child,
   }) : super(key: key, child: child);
 
-  static CounterState of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CounterState>();
+  @override
+  bool updateShouldNotify(InheritedState old) => true;
+
+  static InheritedState of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InheritedState>();
   }
+}
+
+class CounterStateHolder extends StatefulWidget {
+  final Widget child;
+
+  CounterStateHolder({this.child});
 
   @override
-  bool updateShouldNotify(CounterState old) => counterValue != old.counterValue;
+  State<StatefulWidget> createState() => CounterState();
+}
+
+class CounterState extends State<CounterStateHolder> {
+  int _counterValue = 0;
+
+  int get counterValue => _counterValue;
+
+  void increment() => setState(() => _counterValue++);
+  void random() => setState(() => _counterValue = math.Random().nextInt(20));
+  void decrement() => setState(() => _counterValue--);
+
+  @override
+  Widget build(BuildContext context) {
+    print('aaaa');
+    return InheritedState(
+      counterState: this,
+      child: widget.child,
+    );
+  }
 }
