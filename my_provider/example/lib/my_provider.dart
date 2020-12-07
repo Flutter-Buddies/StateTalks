@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
 class _MyInheritedWidget<T extends ChangeNotifier> extends InheritedWidget {
-  _MyInheritedWidget({Key key, Widget child, _MyProviderState<T> state})
+  _MyInheritedWidget({Key key, Widget child, _MyProviderState state})
       : state = state,
         super(key: key, child: child);
 
-  final _MyProviderState<T> state;
+  final _MyProviderState state;
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
 
-  static _MyInheritedWidget<T> of<T extends ChangeNotifier>(
-      BuildContext context) {
+  static _MyInheritedWidget of<T extends ChangeNotifier>(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<_MyInheritedWidget<T>>();
   }
 }
@@ -23,7 +22,7 @@ class MyProvider<T extends ChangeNotifier> extends StatefulWidget {
   MyProvider({this.data, this.child});
 
   @override
-  _MyProviderState<T> createState() => _MyProviderState<T>();
+  State<StatefulWidget> createState() => _MyProviderState<T>();
 
   static _MyProviderState<T> of<T extends ChangeNotifier>(
       BuildContext context) {

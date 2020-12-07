@@ -1,5 +1,5 @@
 import 'package:example/app_data.dart';
-import 'package:example/my_inherited_widget.dart';
+import 'package:example/my_provider.dart';
 import 'package:flutter/material.dart';
 
 void main() {
